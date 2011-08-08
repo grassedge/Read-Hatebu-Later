@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+    <Description about="urn:mozilla:install-manifest">
+        <em:id>readhatebulater2@shibahata.net</em:id>
+        <em:name>Read Hatebu Later</em:name>
+        <em:version>0.1.0</em:version>
+        <em:type>2</em:type>
+        <em:optionsURL>chrome://hatenabookmark/content/config.xul</em:optionsURL>
+        <!--
+        <em:iconURL>chrome://hatenabookmark/skin/images/favicon32.png</em:iconURL>
+         -->
+        <em:unpack>true</em:unpack>
+        <em:localized>
+          <Description>
+            <em:name>Hatena Bookmark</em:name>
+            <em:locale>en-US</em:locale>
+            <em:description>Hatena Bookmark Firefox Add-on</em:description>
+            <em:creator>Hatena</em:creator>
+            <em:homepageURL>http://b.hatena.ne.jp/help/firefox_addon</em:homepageURL>
+          </Description>
+        </em:localized>
+        <em:localized>
+          <Description>
+            <em:name>Hatena Bookmark</em:name>
+            <em:locale>ja</em:locale>
+            <em:description>はてなブックマークへのブックマーク追加や、高速な検索、ツールバー、サイドバー機能などを提供します</em:description>
+            <em:creator>Hatena</em:creator>
+            <em:homepageURL>http://b.hatena.ne.jp/help/firefox_addon</em:homepageURL>
+          </Description>
+        </em:localized>
+
+        <em:targetApplication>
+            <Description>
+                <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+                <em:minVersion>3.0</em:minVersion>
+                <em:maxVersion>6.*</em:maxVersion>
+            </Description>
+        </em:targetApplication>
+    </Description>
+</RDF>

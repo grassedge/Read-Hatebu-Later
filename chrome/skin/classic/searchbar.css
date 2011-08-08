@@ -1,0 +1,28 @@
+@namespace "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+
+/* XXX Should be at a separated file? */
+.search-go-container.mac {
+    /* In XUL box model, min-width includes padding-end length. */
+    min-width: 14px;
+}
+
+.hBookmark-searchbar-mode-menuitem[selected="true"] {
+    font-weight: bold;
+}
+
+.hBookmark-searchbar-mode-menuitem {
+    list-style-image: url("chrome://hatenabookmark/skin/images/searchbar-icons.png");
+}
+
+.hBookmark-searchbar-mode-menuitem[value="all"] {
+    -moz-image-region: rect(0px, 16px, 16px, 0px);
+}
+.hBookmark-searchbar-mode-menuitem[value="comment"] {
+    -moz-image-region: rect(0px, 32px, 16px, 16px);
+}
+.hBookmark-searchbar-mode-menuitem[value="title"] {
+    -moz-image-region: rect(0px, 48px, 16px, 32px);
+}
+.hBookmark-searchbar-mode-menuitem[value="url"] {
+    -moz-image-region: rect(0px, 64px, 16px, 48px);
+}

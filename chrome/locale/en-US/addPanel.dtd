@@ -1,0 +1,58 @@
+<!ENTITY hBookmark.addPanel.initialWidth "640">
+<!ENTITY hBookmark.addPanel.initialHeight "500">
+
+<!ENTITY hBookmark.addPanel.welcomeUserLabel.before "Welcome ">
+<!ENTITY hBookmark.addPanel.welcomeUserLabel.after "">
+
+<!ENTITY hBookmark.addPanel.loadingTitleLabel "Loading Title…">
+<!ENTITY hBookmark.addPanel.editTitleLabel "Edit Title">
+<!ENTITY hBookmark.addPanel.cancelEditTitleLabel "Cancel">
+<!ENTITY hBookmark.addPanel.titleDescription "This title is shared with all users. ">
+<!ENTITY hBookmark.addPanel.titleGuidelineLabel "Guidelines for title changes (in Japanese)">
+<!ENTITY hBookmark.addPanel.titleGuidelineURI "http://b.hatena.ne.jp/help/guideline_title">
+<!ENTITY hBookmark.addPanel.lastTitleEditorLabel "Last modified by">
+
+<!ENTITY hBookmark.addPanel.showCommentsLabel "Show Bookmark Comments">
+<!ENTITY hBookmark.addPanel.commentDescription "Input you comment (optional)">
+
+<!ENTITY hBookmark.addPanel.shareLabel "Share:">
+<!ENTITY hBookmark.addPanel.optionsLabel "Options:">
+<!ENTITY hBookmark.addPanel.confirmEntryLabel "Confirm Bookmark">
+<!ENTITY hBookmark.addPanel.addCollectionLabel "Collection">
+<!ENTITY hBookmark.addPanel.isPrivateLabel "Hide">
+<!ENTITY hBookmark.addPanel.isPrivateDescription "Hide this bookmark from other people.  Access-permitted user also can't view this.">
+<!ENTITY hBookmark.addPanel.isPrivateHelpTooltip "You can hide your bookmark from other people if you join Hatena Bookmark Plus">
+<!ENTITY hBookmark.addPanel.isPrivateHelpURI "http://b.hatena.ne.jp/guide/plus?target=private&amp;ref=firefox">
+<!ENTITY hBookmark.addPanel.sendMailLabel "Mail">
+<!ENTITY hBookmark.addPanel.sendMailDescription "Send this bookmark to the mail address you specified in the configuration page on the web.">
+<!ENTITY hBookmark.addPanel.postTwitterLabel "Twitter">
+<!ENTITY hBookmark.addPanel.postTwitterDescription "Post this bookmark to Twitter.">
+<!ENTITY hBookmark.addPanel.postTwitterHelpTooltip "You can post your bookmark to Twitter">
+<!ENTITY hBookmark.addPanel.postTwitterHelpURI "http://b.hatena.ne.jp/guide/twitter?target=append&amp;ref=firefox">
+<!ENTITY hBookmark.addPanel.twitterDisabledNotice "(Hidden bookmark will not be posted to Twitter)">
+<!ENTITY hBookmark.addPanel.postFacebookLabel "Facebook">
+<!ENTITY hBookmark.addPanel.postFacebookDescription "Post this bookmark to Facebook.">
+<!ENTITY hBookmark.addPanel.postFacebookHelpTooltip "You can post your bookmark to Facebook.">
+<!ENTITY hBookmark.addPanel.postFacebookHelpURI "http://b.hatena.ne.jp/help/config_coop#facebook">
+<!ENTITY hBookmark.addPanel.facebookDisabledNotice "(Hidden bookmark will not be posted to Facebook)">
+<!ENTITY hBookmark.addPanel.postMixiCheckLabel "mixi check">
+<!ENTITY hBookmark.addPanel.postMixiCheckDescription "Post this bookmark to mixi check.">
+<!ENTITY hBookmark.addPanel.postMixiCheckHelpTooltip "You can post your bookmark to mixi check.">
+<!ENTITY hBookmark.addPanel.postMixiCheckHelpURI "http://b.hatena.ne.jp/help/config_coop#mixi-check">
+<!ENTITY hBookmark.addPanel.mixiCheckDisabledNotice "(Hidden bookmark will not be posted to mixi check)">
+<!ENTITY hBookmark.addPanel.normalUserNotice "* Only Plus User (charged option) is able to use this feature.">
+<!ENTITY hBookmark.addPanel.optionHelpLearnMoreText "Learn more">
+
+<!ENTITY hBookmark.addPanel.imageDescription "The image is shared with all users. ">
+<!ENTITY hBookmark.addPanel.imageGuidelineLabel "Guidelines for image usage (in Japanese)">
+<!ENTITY hBookmark.addPanel.imageGuidelineURI "http://b.hatena.ne.jp/help/guideline_image">
+<!ENTITY hBookmark.addPanel.lastImageEditorLabel "Last modified by">
+
+<!ENTITY hBookmark.addPanel.recommendedTagsLabel "Recommended Tags">
+<!ENTITY hBookmark.addPanel.tagsLabel "Tags">
+<!ENTITY hBookmark.addPanel.showAllTagsLabel "Show all tags">
+<!ENTITY hBookmark.addPanel.showFrequentTagsLabel "Show frequently used tags">
+<!ENTITY hBookmark.addPanel.tagHelpLabel "* Learn more about tags (in Japanese)">
+<!ENTITY hBookmark.addPanel.tagHelpURI "http://b.hatena.ne.jp/help/tag">
+
+<!ENTITY hBookmark.addPanel.deleteLabel "Delete">
