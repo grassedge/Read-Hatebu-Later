@@ -1,8 +1,7 @@
-if (!hBookmark)
-    var hBookmark = {};
+if (!RHL)
+    var RHL = {};
 
-Components.utils.import("resource://hatenabookmark/modules/00-utils.jsm",
-                        hBookmark);
+Components.utils.import("resource://rhl/modules/00-utils.jsm", RHL);
 
 /**
  * 指定されたURIのスクリプトを読み込む。
@@ -10,7 +9,7 @@ Components.utils.import("resource://hatenabookmark/modules/00-utils.jsm",
  * @param {String} uri スクリプトのURI。"/"で終わっていた場合は
  *                     そのディレクトリ直下のすべてのスクリプトを読み込む。
  */
-hBookmark.load = function (uri) {
+RHL.load = function (uri) {
     if (uri.charAt(uri.length - 1) === "/") {
         var load = arguments.callee;
         load.getScriptURIs(uri)
@@ -26,12 +25,12 @@ hBookmark.load = function (uri) {
         env.EXPORT.forEach(function (name) this[name] = env[name], this);
 };
 
-hBookmark.load.getScriptURIs = function (dirURI) {
+RHL.load.getScriptURIs = function (dirURI) {
     const Cc = Components.classes;
     const Ci = Components.interfaces;
     var uris = [];
     var dirPath = dirURI.replace(/^[\w-]+:\/\/[\w.:-]+\//, "");
-    var baseURI = 'chrome://hatenabookmark/' + dirPath;
+    var baseURI = 'chrome://rhl/' + dirPath;
     // XXX jarファイルに固めるのならnsIZipReaderを使ってごにょごにょする。
     var ios = Cc["@mozilla.org/network/io-service;1"].
               getService(Ci.nsIIOService);
@@ -50,8 +49,8 @@ hBookmark.load.getScriptURIs = function (dirURI) {
     return uris.sort();
 };
 
-if (!("autoload" in hBookmark) || hBookmark.autoload) {
-    hBookmark.loadModules();
-    hBookmark.load("chrome://hatenabookmark/content/common/");
-    hBookmark.load(location.href.replace(/\.\w+$/, "/"));
+if (!("autoload" in RHL) || RHL.autoload) {
+    RHL.loadModules();
+    //RHL.load("chrome://rhl/content/common/");
+    RHL.load(location.href.replace(/\.\w+$/, "/"));
 }

@@ -1,180 +1,40 @@
 <?xml version="1.0" ?>
-<?xml-stylesheet type="text/css" href="chrome://hatenabookmark/skin/toolbar.css"?>
-<?xml-stylesheet type="text/css" href="chrome://hatenabookmark/skin/commentViewer.css"?>
-<?xml-stylesheet type="text/css" href="chrome://hatenabookmark/skin/star.css"?>
-<?xml-stylesheet type="text/css" href="chrome://hatenabookmark/skin/browser.css"?>
-<!DOCTYPE overlay SYSTEM "chrome://hatenabookmark/locale/browser.dtd" [
-<!ENTITY % toolbar SYSTEM "chrome://hatenabookmark/locale/toolbar.dtd">
-%toolbar;
-<!ENTITY % star SYSTEM "chrome://hatenabookmark/locale/star.dtd">
-%star;
-]>
-<overlay id="HatenabookmarkOverlay"
-         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-         xmlns:html="http://www.w3.org/1999/xhtml">
+<?xml-stylesheet type="text/css" href="chrome://global/skin/global.css"?>
+<?xml-stylesheet type="text/css" href="chrome://rhl/skin/locationbar.css"?>
+
+
+
+
+
+
+
+<!-- オーバーレイすることを表す -->
+<overlay id="helloworld" 
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
   <script type="application/javascript" src="autoloader.js"></script>
-  <script type="text/javascript; version=1.8" charset="utf-8">
-    // <![CDATA[
-    hBookmark.EventService.dispatch('fastload', window);
-    // ]]>
-  </script>
 
-  <!-- キーセット。どれのことだかまだわかってない -->
-  <window id="main-window">
-    <keyset id='hBookmark-keyset' />
-  </window>
+  <!-- ステータスバーに追加 -->
+  <hbox id="urlbar-icons">
+    <image id="rhl-locationbar-icon" registed="false" />
+  </hbox>
 
-  <statusbar id="status-bar">
-    <statusbarpanel id="hBookmark-readlaterPanel"
-                    collapsed="false"
-                    context="hBookmarkStatusMenu">
-      <image id="hBookmark-readlater"
-             tooltiptext="&hBookmark.statusbar.tooltip.comment;"
-             loading="false"
-             />
-    </statusbarpanel>
+  <!-- ツールメニューの追加 
+  <menupopup id="menu_ToolsPopup">
+    <menuitem insertafter="devToolsSeparator" label="Hello, World!"
+              accesskey="H" oncommand="hello();" />
+  </menupopup>-->
 
-    <statusbarpanel id="hBookmark-statusBarPanel"
-                    collapsed="false"
-                    context="hBookmarkStatusMenu">
-      <image
-          id="hBookmark-status-comment"
-          tooltiptext="&hBookmark.statusbar.tooltip.comment;"
-          loading="false"
-          />
-    </statusbarpanel>
-  </statusbar>
+  <!-- 右クリックメニューの追加 -->
+  <popup id="contentAreaContextMenu">
+    <menuitem
+       insertafter="context-bookmarklink"
+       label="このリンクを[あとで読ブ]"
+       id="rhl-menu-addlink"
+       />
+  </popup>
 
-  <popupset id="mainPopupSet">
+  <!-- JavaScriptファイルのインポート -->
+  <script type="application/x-javascript" src="rhl.js" />
 
-    <panel id="hBookmark-panel-readlater"
-           orient="vertical">
-      <vbox flex="1"
-            id="hBookmark-readlater-container">
-        <vbox flex="1"
-              id="hBookmark-readlater-list-container">
-          <html:div id="hBookmark-readlater-div">
-            <html:ul id="hBookmark-readlater-list" />
-          </html:div>
-        </vbox>
-        <vbox id="hBookmark-readlater-footer">
-        </vbox>
-      </vbox>
-    </panel>
-
-    <panel id="hBookmark-panel-comment" 
-           orient="vertical"
-           noautofocus="true"
-           noautohide="false">
-      <vbox flex="1"
-            id="hBookmark-comment-container">
-        <vbox flex="1"
-              id="hBookmark-comment-list-container">
-          <html:div id="hBookmark-comment-div">
-            <html:img alt="close"
-                      title="close"
-                      src="chrome://hatenabookmark/skin/images/close-comment.png"
-                      id="hBookmark-comment-close"
-                      mousethrough="never" />
-            <html:ul id="hBookmark-comment-list" />
-          </html:div>
-        </vbox>
-        <vbox id="hBookmark-comment-footer">
-          <hbox align="center">
-            <image id="hBookmark-comment-favicon" />
-            <label flex="1" id="hBookmark-comment-title" crop="end" />
-            <image id="hBookmark-comment-stars-loading-indicator"
-                   src="chrome://hatenabookmark/skin/images/star-loading.gif"
-                   tooltiptext="&hBookmark.star.loadingTooltip;"/>
-            <vbox id="hBookmark-comment-page-stars-box"
-                  collapsed="true">
-              <html:div id="hBookmark-comment-page-stars-container"/>
-            </vbox>
-            <label onclick="hBookmark.CommentViewer.goEntry(event);" id="hBookmark-comment-users" />
-            <label onclick="hBookmark.CommentViewer.goEntry(event);" id="hBookmark-comment-pub-pri-users" />
-            <image onclick="hBookmark.CommentViewer.filterToggle(event);"
-                   src="chrome://hatenabookmark/skin/images/comment-viewer-toggle-on.png"
-                   id="hBookmark-comment-toggle" />
-          </hbox>
-          <vbox id="hBookmark-comment-expanded-page-stars-box"
-                collapsed="true">
-            <html:div id="hBookmark-comment-expanded-page-stars-container"/>
-          </vbox>
-        </vbox>
-      </vbox>
-    </panel>
-
-    <!-- これなんだ？ -->
-    <panel 
-        id="hBookmark-panel-urlbar" 
-        noautofocus="true"
-        noautohide="false"
-        >
-      <richlistbox 
-          disableKeyNavigation="true"
-          rows="6"
-          context="hBookmark-bookmark-context"
-          id="hBookmark-urlbar-listbox" flex="1" />
-    </panel>
-
-    <!-- これなんだ？ -->
-    <tooltip id="hBookmark-star-tooltip">
-      <hbox align="center">
-        <image id="hBookmark-star-tooltip-icon"/>
-        <label id="hBookmark-star-tooltip-user"/>
-      </hbox>
-      <description id="hBookmark-star-tooltip-quote"/>
-    </tooltip>
-
-    <!-- これなんだ？ -->
-    <!-- Without the value 'top' of the level attribute, this popup is
-         laid under the comment viewer popup in Mac Firefox 3.5. -->
-    <panel id="hBookmark-star-palette" level="top">
-      <image id="hBookmark-star-palette-green"
-             class="hBookmark-star-palette-color"
-             color="green"/>
-      <image id="hBookmark-star-palette-red"
-             class="hBookmark-star-palette-color"
-             color="red"/>
-      <image id="hBookmark-star-palette-blue"
-             class="hBookmark-star-palette-color"
-             color="blue"/>
-      <image id="hBookmark-star-palette-purple"
-             class="hBookmark-star-palette-color"
-             color="purple"/>
-    </panel>
-  </popupset>
-
-
-  <!-- これは使っている模様。消すと動かなくなる -->
-  <script type="text/javascript; version=1.8" charset="utf-8">
-    // <![CDATA[
-    (function() {
-    with(hBookmark) {
-    if (hBookmark.nowDebug) {
-    toErrorConsole();
-    }
-
-    EventService.dispatch('preload', window);
-
-    window.addEventListener('load', function(e) {
-    EventService.dispatch('Migration', window); // タイミングはここで
-
-    EventService.dispatch('load', window);
-
-    if (!shared.get('firstPreload')) {
-
-    EventService.dispatch('firstPreload', window);
-    shared.set('firstPreload', true);
-    }
-    }, false);
-
-    window.addEventListener('unload', function(e) {
-    EventService.dispatch('unload', window);
-    }, false);
-
-    }
-    })();
-    // ]]>
-  </script>
 </overlay>

@@ -1,0 +1,10 @@
+#rhl-locationbar-icon[registed="true"] {
+  list-style-image: url("chrome://rhl/skin/images/buttons.png");
+  -moz-image-region: rect(46px 64px 62px 48px);
+  visibility: inherit !important;
+}
+#rhl-locationbar-icon {
+  list-style-image: url("chrome://rhl/skin/images/buttons.png");
+  -moz-image-region: rect(46px 16px 62px 0px);
+  visibility: inherit !important;
+}
