@@ -1,5 +1,25 @@
 const EXPORT = ['ReadLater'];
+var rhlTag = Application.prefs.get('extensions.readhatebulater.tag').value;
+    //dump(prefs.getCharPref('tag'));
+
 window.addEventListener('load', function() {
+
+    // var prefs = Components.classes["@mozilla.org/preferences-service;1"]  
+    //      .getService(Components.interfaces.nsIPrefService)  
+    //      .getBranch("extensions.readhatebulater.");
+    // prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);  
+    //prefs.addObserver("", this, false);  
+    
+    // set context appearance
+    var contextMenu = document.getElementById("contentAreaContextMenu");
+    if (contextMenu) {
+        contextMenu.addEventListener("popupshowing", function(e) {
+            var addlink = document.getElementById("rhl-menu-addlink");
+            addlink.setAttribute('hidden', !gContextMenu.onLink);
+        }, false);
+    }
+
+    
     RHL.User.login();
     //dump('\nhogeeeex:');dump(RHL.User.user);dump('\n');
     let icon = document.getElementById("rhl-locationbar-icon");
@@ -26,7 +46,7 @@ window.addEventListener('load', function() {
             add_bookmark(url);
             cache[url] = {
                 url: url,
-                tag: '*あとで読む'
+                tag: rhlTag
             };
         }
     });
@@ -38,7 +58,7 @@ window.addEventListener('load', function() {
             dump('bookmark!');
             cache[url] = {
                 url: url,
-                tag: '*あとで読む'
+                tag: rhlTag
             };
         } else {
             dump('already bookmarked');
@@ -71,7 +91,7 @@ window.addEventListener('load', function() {
                 }
                 for (i = 0, len = bookmarks.length; i < len; i++) {
                     let bookmark = bookmarks[i];
-                    if (bookmark.tag.indexOf('*あとで読む') != -1) {
+                    if (bookmark.tag.indexOf(rhlTag) != -1) {
                         cache[bookmark.url] = bookmark;
                     }
                 }
@@ -120,7 +140,7 @@ function add_bookmark(url) {
         request.setRequestHeader(field, value);
     let query = {
         url:url,
-        comment:'[*あとで読む]',
+        comment:'[' + rhlTag + ']',
         rks: RHL.User.user.rks
     };
     request.send(net.makeQuery(query));
@@ -140,7 +160,7 @@ function delete_bookmark(url) {
         request.setRequestHeader(field, value);
     let query = {
         url:url,
-        comment:'[*あとで読む]',
+        comment:'[' + rhlTag + ']',
         rks: RHL.User.user.rks
     };
     request.send(net.makeQuery(query));

@@ -6,8 +6,8 @@
     <em:version>0.1.0</em:version><!-- アドオンのバージョン -->
     <em:id>rhl@shibahata.net</em:id><!-- アドオンのid -->
     <em:type>2</em:type>
+    <em:optionsURL>chrome://rhl/content/config.xul</em:optionsURL>
     <em:iconURL></em:iconURL><!-- アイコンのChromeURL -->
-    
     <em:targetApplication>
       <!-- Firefox -->
       <Description>
@@ -22,7 +22,7 @@
         <em:locale>en-US</em:locale><!-- 英語環境での情報であることを表す。 -->
         <em:creator>shibahata</em:creator><!-- 英語の作者名 -->
         <em:name>Read Hatebu Later</em:name><!-- 英語のアドオン名 -->
-        <em:description>show "Hello, World".</em:description><!-- 英語説明 -->
+        <em:description>add a page to Hatebu by 1 click.</em:description><!-- 英語説明 -->
         <em:homepageURL></em:homepageURL><!--ホームページ　URL -->
       </Description>
     </em:localized>
@@ -31,7 +31,7 @@
         <em:locale>ja</em:locale><!-- 日本語環境での情報であることを表す。 -->
         <em:creator>芝端</em:creator><!-- 日本語の作者名 -->
         <em:name>あとで読ブ</em:name><!-- 日本語のアドオン名 -->
-        <em:description>"Hello, World"と表示します。</em:description><!-- 日本語説明 -->
+        <em:description>1クリックではてブに追加する拡張です</em:description><!-- 日本語説明 -->
         <em:homepageURL></em:homepageURL><!--ホームページ　URL -->
       </Description>
     </em:localized>
