@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<?xml-stylesheet href="chrome://mozapps/content/preferences/preferences.css"?>
+<?xml-stylesheet href="chrome://browser/skin/preferences/preferences.css"?>
+
+
+
+
+<prefwindow id="rhl-config"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    title="あとで読ブの設定"
+    >
+
+  <prefpane
+     id="prefpane-locationbar" label="全般" flex="1">
+    <preferences>
+      <preference 
+         id="extensions.readhatebulater.tag"
+         name="extensions.readhatebulater.tag"
+         type="bool"/>
+    </preferences>
+    <vbox>
+      <label value="hogeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" />
+      <label value="hogeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" />
+      <label value="hogeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" />
+      <label value="hogeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" />
+      <hbox>
+        <label value="設定するタグ:" />
+        <textbox preference="extensions.readhatebulater.tag" id="tag" />
+      </hbox>
+    </vbox>
+  </prefpane>
+</prefwindow>
