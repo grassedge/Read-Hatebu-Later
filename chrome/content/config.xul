@@ -16,20 +16,16 @@
   <prefpane
      id="prefpane-locationbar" label="全般" flex="1">
     <preferences>
-      <preference 
-         id="extensions.readhatebulater.tag"
-         name="extensions.readhatebulater.tag"
-         type="bool"/>
+      <preference id="extensions.readhatebulater.tag"
+                  name="extensions.readhatebulater.tag" type="string"/>
     </preferences>
+
     <vbox>
-      <label value="hogeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" />
-      <label value="hogeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" />
-      <label value="hogeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" />
-      <label value="hogeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" />
-      <hbox>
+      <hbox align="center">
         <label value="設定するタグ:" />
-        <textbox preference="extensions.readhatebulater.tag" id="tag" />
+        <textbox preference="extensions.readhatebulater.tag" id="rhlTag" />
       </hbox>
+      <button label="OK" id="config_confirm" />
     </vbox>
   </prefpane>
 </prefwindow>

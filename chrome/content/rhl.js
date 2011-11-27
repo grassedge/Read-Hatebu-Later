@@ -2,13 +2,50 @@ const EXPORT = ['ReadLater'];
 var rhlTag = Application.prefs.get('extensions.readhatebulater.tag').value;
     //dump(prefs.getCharPref('tag'));
 
+var ReadLater = {
+    prefs: null,
+    rhlTag: "",
+
+    init: function() {
+        dump('init init init \n');
+
+        // this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
+        //     .getService(Components.interfaces.nsIPrefService)
+        //     .getBranch("stockwatcher2.");
+        // this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
+        // this.prefs.addObserver("", this, false);
+	// 
+        // this.tickerSymbol = this.prefs.getCharPref("symbol").toUpperCase();
+        // 
+        // this.refreshInformation();
+        // window.setInterval(this.refreshInformation, 10*60*1000);
+    }
+};
+
+window.addEventListener('load', function(e) { ReadLater.init(); }, false);
+
 window.addEventListener('load', function() {
 
-    // var prefs = Components.classes["@mozilla.org/preferences-service;1"]  
-    //      .getService(Components.interfaces.nsIPrefService)  
-    //      .getBranch("extensions.readhatebulater.");
-    // prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);  
+    var prefs = Components.classes["@mozilla.org/preferences-service;1"]  
+         .getService(Components.interfaces.nsIPrefService)  
+         .getBranch("extensions.readhatebulater.");
+    prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);  
     //prefs.addObserver("", this, false);  
+
+    var nsISupportsString = Components.interfaces.nsISupportsString;
+
+
+    prefs.setCharPref('tag', unescape(encodeURIComponent('*あとで読め')));
+    dump('\n');
+    dump('\n');
+    var str = prefs.getComplexValue('tag', nsISupportsString);
+    dump(str);
+    dump(str.data);
+    // //dump(prefs.getCharPref('tag'));
+    dump('\n');
+    dump('\n');
+   
+    
     
     // set context appearance
     var contextMenu = document.getElementById("contentAreaContextMenu");
@@ -19,7 +56,7 @@ window.addEventListener('load', function() {
         }, false);
     }
 
-    
+
     RHL.User.login();
     //dump('\nhogeeeex:');dump(RHL.User.user);dump('\n');
     let icon = document.getElementById("rhl-locationbar-icon");
