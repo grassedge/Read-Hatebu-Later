@@ -20,12 +20,9 @@
                   name="extensions.readhatebulater.tag" type="string"/>
     </preferences>
 
-    <vbox>
-      <hbox align="center">
-        <label value="設定するタグ:" />
-        <textbox preference="extensions.readhatebulater.tag" id="rhlTag" />
-      </hbox>
-      <button label="OK" id="config_confirm" />
-    </vbox>
+    <hbox align="center">
+      <label value="設定するタグ:" />
+      <textbox preference="extensions.readhatebulater.tag" id="rhlTag" />
+    </hbox>
   </prefpane>
 </prefwindow>
