@@ -1,5 +1,4 @@
 const EXPORT = ['ReadLater'];
-var rhlTag = Application.prefs.get('extensions.readhatebulater.tag').value;
 
 var ReadLater = {
     prefs: null,
@@ -12,6 +11,24 @@ var ReadLater = {
         RHL.User.login();
         // ログインユーザー名を取得
         // this.user = RHL.User.user; // まだ取得できていないので無意味
+
+        this.setupConfig();
+        this.setupContextMenu();
+        this.setupRhlList();
+
+        let icon = document.getElementById("rhl-locationbar-icon");
+        icon.addEventListener('click', this.toggle, false);
+
+        gBrowser.addEventListener('load', this.setIcon, true);
+        document.addEventListener('TabSelect', this.setIcon, false);
+        window.setInterval(this.setupRhlList, 10*60*1000);
+    },
+
+    shutdown: function() {
+	this.prefs.removeObserver("", this);
+    },
+
+    setupConfig: function Setup_config() {
         // 設定を初期化
         var nsISupportsString = Components.interfaces.nsISupportsString;
         this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
@@ -21,33 +38,11 @@ var ReadLater = {
         this.prefs.addObserver("", this, false);
 	
         this.rhlTag = this.prefs.getComplexValue('tag', nsISupportsString).data;
-        // コンテキストメニューを初期化
-        this.setupContextMenu();
-        this.setupRhlList();
-
-        let icon = document.getElementById("rhl-locationbar-icon");
-        icon.addEventListener('click', this.toggle, false);
-
-        gBrowser.addEventListener('load', this.setIcon, true);
-        document.addEventListener('TabSelect', this.setIcon, false);
-    },
-
-    shutdown: function() {
-	this.prefs.removeObserver("", this);
-    },
-
-    observe: function(subject, topic, data) {
-	if (topic != "nsPref:changed") {
-	    return;
-	}
-	switch(data) {
-          case 'tag':
-            this.rhlTag = this.prefs.getComplexValue('tag', nsISupportsString).data;
-            break;
-        }
+        
     },
 
     setupContextMenu: function() {
+        // コンテキストメニューを初期化
         // set context appearance
         var contextMenu = document.getElementById("contentAreaContextMenu");
         if (contextMenu) {
@@ -56,6 +51,18 @@ var ReadLater = {
                 addlink.setAttribute('hidden', !gContextMenu.onLink);
             }, false);
         }
+        // set context action
+        var contextAddlink = document.getElementById("rhl-menu-addlink");
+        contextAddlink.addEventListener('click', function(){
+            var url = gContextMenu.linkURL;
+            if (!ReadLater.rhlList[url]) {
+                add_bookmark(url);
+                ReadLater.rhlList[url] = {
+                    url: url,
+                    tag: ReadLater.rhlTag
+                };
+            }
+        });
     },
 
     setupRhlList: function setup_rhl_list() {
@@ -71,6 +78,7 @@ var ReadLater = {
                     var i, j, len;
                     var data = req.responseText.split(LF);
                     for (i = 0, len = data.length / 4 * 3; i < len; i += 3) {
+                        
                         bookmarks.push({
                             title: data[i],
                             tag  : data[i + 1],
@@ -98,6 +106,20 @@ var ReadLater = {
         this.rhlList = cache;
     },
     
+
+    // callback
+    observe: function(subject, topic, data) {
+	if (topic != "nsPref:changed") {
+	    return;
+	}
+	switch(data) {
+          case 'tag':
+            var nsISupportsString = Components.interfaces.nsISupportsString;
+            ReadLater.rhlTag = this.prefs.getComplexValue('tag', nsISupportsString).data;
+            break;
+        }
+    },
+
     // callback
     toggle: function toggle (){
         dump('toggle\n');
@@ -137,27 +159,6 @@ var ReadLater = {
 window.addEventListener('load',   function(e) { ReadLater.init(); }, false);
 window.addEventListener('unload', function(e) { ReadLater.shutdown(); }, false);
 
-window.addEventListener('load', function() {
-
-    // prefs.setCharPref('tag', unescape(encodeURIComponent('*あとで読め')));
-    // var str = prefs.getComplexValue('tag', nsISupportsString).data;
-    //dump(prefs.getCharPref('tag'));
-
-    // RHL.User.login();
-
-    let context_addlink = document.getElementById("rhl-menu-addlink");
-    context_addlink.addEventListener('click', function(){
-        let url = gContextMenu.linkURL;
-        if (!cache[url]) {
-            add_bookmark(url);
-            cache[url] = {
-                url: url,
-                tag: ReadLater.rhlTag
-            };
-        }
-    });
-});
-
 function add_bookmark(url) {
     dump('add bookmark\n');
     var request = new XMLHttpRequest();
@@ -179,10 +180,10 @@ function add_bookmark(url) {
 }
 
 function delete_bookmark(url) {
+    dump('delete bookmark\n');
     var request = new XMLHttpRequest();
     request.mozBackgroundRequest = true;
     request.open('POST', 'http://b.hatena.ne.jp/' + RHL.User.user.name + '/api.delete_bookmark.json?editer=fxaddon');
-    //request.open('POST', 'http://b.hatena.ne.jp/' + RHL.User.user.name + '/add.edit.json?editer=fxaddon');
     request.addEventListener('error', function(e){dump('error...');}, false);
     let headers = {
         "Content-Type": "application/x-www-form-urlencoded",
