@@ -3,6 +3,7 @@ const EXPORT = ['ReadLater'];
 var ReadLater = {
     prefs: null,
     rhlTag: "",
+    tagList: null,
     rhlList: null,
     user: null,
 
@@ -56,7 +57,7 @@ var ReadLater = {
         contextAddlink.addEventListener('click', function(){
             var url = gContextMenu.linkURL;
             if (!ReadLater.rhlList[url]) {
-                add_bookmark(url);
+                ReadLater.addBookmark(url);
                 ReadLater.rhlList[url] = {
                     url: url,
                     tag: ReadLater.rhlTag
@@ -78,23 +79,31 @@ var ReadLater = {
                     var i, j, len;
                     var data = req.responseText.split(LF);
                     for (i = 0, len = data.length / 4 * 3; i < len; i += 3) {
-                        
+                        var tag = [];
+                        var tmp = data[i + 1].match(/\[(.*?)\]/g);
+                        if (tmp) for (j = 0; j < tmp.length; j++) {
+                            tag.push(tmp[j].slice(1,-1));
+                        }
                         bookmarks.push({
                             title: data[i],
-                            tag  : data[i + 1],
+                            tag  : tag,
                             url  : data[i + 2]
                         });
                     }
+                    // ブックマーク数、自分がタグ付けした日付を取得
                     for (i = data.length / 4 * 3, j = 0, len = data.length;
                          i < len; i++, j++) {
                         var bookmarkNumAndDate = data[i].split(TAB);
                         bookmarks[j].bookmarkNum = bookmarkNumAndDate[0];
                         bookmarks[j].date        = bookmarkNumAndDate[1];
                     }
+                    // [*あとで読む]のタグがついてるものをcacheに確保
                     for (i = 0, len = bookmarks.length; i < len; i++) {
                         let bookmark = bookmarks[i];
-                        if (bookmark.tag.indexOf(ReadLater.rhlTag) != -1) {
-                            cache[bookmark.url] = bookmark;
+                        for (j = 0; j < bookmark.tag.length; j++) {
+                            if (bookmark.tag[j] == ReadLater.rhlTag) {
+                                cache[bookmark.url] = bookmark;
+                            }
                         }
                     }
                 } else {
@@ -103,7 +112,7 @@ var ReadLater = {
             }
         };
         req.send(null);
-        this.rhlList = cache;
+        ReadLater.rhlList = cache;
     },
     
 
@@ -130,14 +139,14 @@ var ReadLater = {
         let registed = icon.getAttribute('registed');
         if (registed == 'true') {
             icon.setAttribute('registed', 'false');
-            delete_bookmark(url);
+            ReadLater.deleteBookmark(url);
             delete ReadLater.rhlList[url];
         } else {
             icon.setAttribute('registed', 'true');
-            add_bookmark(url);
+            ReadLater.addBookmark(url);
             ReadLater.rhlList[url] = {
                 url: url,
-                tag: ReadLater.rhlTag
+                tag: [ReadLater.rhlTag]
             };
         }
     },
@@ -153,51 +162,53 @@ var ReadLater = {
         } else {
             icon.setAttribute('registed', 'false');
         }
+    },
+
+    addBookmark: function add_bookmark(url) {
+        dump('add bookmark\n');
+        var request = new XMLHttpRequest();
+        request.mozBackgroundRequest = true;
+        request.open('POST', 'http://b.hatena.ne.jp/' + RHL.User.user.name + '/add.edit.json?editer=fxaddon');
+        request.addEventListener('error', function(e){dump('error...');}, false);
+        let headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Cookie":       "rk=" + RHL.User.user.rk
+        };
+        for (let [field, value] in Iterator(headers))
+            request.setRequestHeader(field, value);
+        let query = {
+            url:url,
+            comment:'[' + ReadLater.rhlTag + ']',
+            rks: RHL.User.user.rks
+        };
+        request.send(net.makeQuery(query));
+    },
+    
+    deleteBookmark: function delete_bookmark(url) {
+        dump('delete bookmark\n');
+        var request = new XMLHttpRequest();
+        request.mozBackgroundRequest = true;
+        request.open('POST', 'http://b.hatena.ne.jp/' + RHL.User.user.name + '/api.delete_bookmark.json?editer=fxaddon');
+        request.addEventListener('error', function(e){dump('error...');}, false);
+        let headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Cookie":       "rk=" + RHL.User.user.rk
+        };
+        for (let [field, value] in Iterator(headers))
+            request.setRequestHeader(field, value);
+        let query = {
+            url:url,
+            comment:'[' + ReadLater.rhlTag + ']',
+            rks: RHL.User.user.rks
+        };
+        request.send(net.makeQuery(query));
     }
+    
 };
 
 window.addEventListener('load',   function(e) { ReadLater.init(); }, false);
 window.addEventListener('unload', function(e) { ReadLater.shutdown(); }, false);
 
-function add_bookmark(url) {
-    dump('add bookmark\n');
-    var request = new XMLHttpRequest();
-    request.mozBackgroundRequest = true;
-    request.open('POST', 'http://b.hatena.ne.jp/' + RHL.User.user.name + '/add.edit.json?editer=fxaddon');
-    request.addEventListener('error', function(e){dump('error...');}, false);
-    let headers = {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Cookie":       "rk=" + RHL.User.user.rk
-    };
-    for (let [field, value] in Iterator(headers))
-        request.setRequestHeader(field, value);
-    let query = {
-        url:url,
-        comment:'[' + ReadLater.rhlTag + ']',
-        rks: RHL.User.user.rks
-    };
-    request.send(net.makeQuery(query));
-}
-
-function delete_bookmark(url) {
-    dump('delete bookmark\n');
-    var request = new XMLHttpRequest();
-    request.mozBackgroundRequest = true;
-    request.open('POST', 'http://b.hatena.ne.jp/' + RHL.User.user.name + '/api.delete_bookmark.json?editer=fxaddon');
-    request.addEventListener('error', function(e){dump('error...');}, false);
-    let headers = {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Cookie":       "rk=" + RHL.User.user.rk
-    };
-    for (let [field, value] in Iterator(headers))
-        request.setRequestHeader(field, value);
-    let query = {
-        url:url,
-        comment:'[' + ReadLater.rhlTag + ']',
-        rks: RHL.User.user.rks
-    };
-    request.send(net.makeQuery(query));
-}
 
 var net = {};
 net.makeQuery =  function net_makeQuery (data) {
