@@ -9,13 +9,13 @@ var ReadLater = {
 
     init: function() {
 
-        RHL.User.login();
+        User.login();
         // ログインユーザー名を取得
         // this.user = RHL.User.user; // まだ取得できていないので無意味
 
         this.setupConfig();
         this.setupContextMenu();
-        this.setupRhlList();
+        //this.setupRhlList();
 
         let icon = document.getElementById("rhl-locationbar-icon");
         icon.addEventListener('click', this.toggle, false);
@@ -68,7 +68,7 @@ var ReadLater = {
 
     setupRhlList: function setup_rhl_list() {
         var req = new XMLHttpRequest();
-        req.open('GET', 'http://b.hatena.ne.jp/hatsu48/search.data', true);
+        req.open('GET', 'http://b.hatena.ne.jp/' + User.user.name + '/search.data', true);
         req.onreadystatechange = ReadLater.setRhlList;
         req.send(null);
     },
@@ -140,7 +140,6 @@ var ReadLater = {
     
     // callback
     toggle: function toggle (){
-        dump('toggle\n');
         let icon = document.getElementById("rhl-locationbar-icon");
         // 現在開いているタブ
         let tab = gBrowser.selectedBrowser.contentDocument;
@@ -170,7 +169,6 @@ var ReadLater = {
 
     // callback
     addBookmarkByIcon: function add_bookmark(url) {
-        dump('add_bookmark');
         var comment = '[' + ReadLater.rhlTag + ']';
         if (ReadLater.tagList[url]) {
             comment += ReadLater.tagList[url].comment;
@@ -238,21 +236,152 @@ var net = {
         return pairs.join('&');
     },
 
-    post: function net_post (command, query) {
+    post: function Net_post (command, query) {
         var req = new XMLHttpRequest();
         req.mozBackgroundRequest = true;
-        req.open('POST', 'http://b.hatena.ne.jp/' + RHL.User.user.name + net.api[command]);
+        req.open('POST', 'http://b.hatena.ne.jp/' + User.user.name + net.api[command]);
         req.addEventListener('error', function(e){dump('error...');}, false);
         let headers = {
             "Content-Type": "application/x-www-form-urlencoded",
-            "Cookie":       "rk=" + RHL.User.user.rk
+            "Cookie":       "rk=" + User.user.rk
         };
         for (let [field, value] in Iterator(headers))
             req.setRequestHeader(field, value);
-        query.rks = RHL.User.user.rks;
+        query.rks = User.user.rks;
         req.send(net.makeQuery(query));
+    },
+
+    _http: function net__http (url, callback, errorback, async, query, headers, method) {
+        // var user = shared.get('User').user;
+        // if (/^https?:\/\/(?:[\w-]+\.)+hatena.ne.jp(?=[:\/]|$)/.test(url) &&
+        //     user && !headers)
+        //     headers = { Cookie: 'rk=' + user.rk };
+        let xhr = new XMLHttpRequest();
+        xhr.mozBackgroundRequest = true;
+        if (async) {
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        if (typeof callback == 'function')
+                            callback(xhr);
+                    } else {
+                        if (typeof errorback == 'function')
+                            errorback(xhr);
+                    }
+                }
+            };
+        }
+        if (method == 'GET') {
+            let q = this.makeQuery(query);
+            if (q) {
+                url += '?' + q;
+            }
+        }
+        xhr.open(method, url, async);
+        
+        for (let [field, value] in Iterator(headers || {}))
+            xhr.setRequestHeader(field, value);
+        
+        if (method == 'POST') {
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send(this.makeQuery(query));
+        } else {
+            xhr.send(null);
+            if (!async) {
+                if (typeof callback == 'function') {
+                    callback(xhr);
+                }
+            }
+        }
+        return xhr;
     }
+
 };
+
+
+var Ci = Components.interfaces;
+var Cc = Components.classes;
+
+let getService = function getService(name, i) {
+    let interfaces = Array.concat(i);
+    let service = Cc[name].getService(interfaces.shift());
+    interfaces.forEach(function(i) service.QueryInterface(i));
+    return service;
+};
+
+var User = {
+    rk: (function User_getRk() {
+        let cookies = getService("@mozilla.org/cookiemanager;1",
+                                 Ci.nsICookieManager).enumerator;
+        while (cookies.hasMoreElements()) {
+            let cookie = cookies.getNext().QueryInterface(Ci.nsICookie);
+            if (cookie.host === ".hatena.ne.jp" && cookie.name === "rk") {
+                //Prefs.bookmark.set('everLoggedIn', true);
+                return cookie.value;
+            }
+        }
+        return "";
+    })(),
+
+    login: function User_login () {
+        net._http('http://b.hatena.ne.jp/my.name',
+                  User._login, User.loginErrorHandler,
+                  true, null, { Cookie: 'rk=' + User.rk }, 'POST');
+    },
+
+    _login: function User__login (res) {
+        res = decodeJSON(res.responseText);
+        if (res.login) {
+            User.setUser(res);
+            ReadLater.setupRhlList();
+            return User.user;
+        } else {
+            User.clearUser();
+            return false;
+        }
+    },
+
+    loginErrorHandler: function User_loginErrorHandler(res) {
+        dump('login errro...');
+    },
+
+    setUser: function User_setCurrentUser (res) {
+        // if (res.bookmark_count) {
+        //     shared.set('alreadyBookmarked', true);
+        //     Prefs.bookmark.set('everBookmarked', true);
+        // }
+        // let current = this.user;
+        // if (current) {
+        //     if (current.name == res.name) {
+        //         extend(current.options, res);
+        //         delete current._ignores;
+        //         return current;
+        //     }
+        //     this.clearUser(true);
+        // }
+        //let user = new User(res.name, res);
+        //this.user = user;
+        this.user = {
+            name: res.name,
+            rks : res.rks
+        };
+        //EventService.dispatch('UserChange', this);
+    }
+
+};
+
+function decodeJSON(json) {
+    try {
+        return (typeof JSON === "object")
+            ? JSON.parse(json)
+            : Cc['@mozilla.org/dom/json;1'].createInstance(Ci.nsIJSON)
+                                           .decode(json);
+    } catch (ex) {
+        return null;
+    }
+}
+
+
 
 window.addEventListener('load',   function(e) { ReadLater.init(); }, false);
 window.addEventListener('unload', function(e) { ReadLater.shutdown(); }, false);

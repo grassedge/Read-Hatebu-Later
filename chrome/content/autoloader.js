@@ -1,3 +1,5 @@
+dump('autoload\n');
+
 if (!RHL)
     var RHL = {};
 
@@ -50,6 +52,7 @@ RHL.load.getScriptURIs = function (dirURI) {
 };
 
 if (!("autoload" in RHL) || RHL.autoload) {
+    dump('autoload in RHL\n');
     RHL.loadModules();
     //RHL.load("chrome://rhl/content/common/");
     RHL.load(location.href.replace(/\.\w+$/, "/"));
