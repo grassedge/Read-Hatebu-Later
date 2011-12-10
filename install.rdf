@@ -5,6 +5,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:version>0.1.0</em:version><!-- アドオンのバージョン -->
     <em:id>rhl@shibahata.net</em:id><!-- アドオンのid -->
+    <em:name>Read Hatebu Later</em:name>
     <em:type>2</em:type>
     <em:optionsURL>chrome://rhl/content/config.xul</em:optionsURL>
     <em:iconURL></em:iconURL><!-- アイコンのChromeURL -->
@@ -12,8 +13,8 @@
       <!-- Firefox -->
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-        <em:minVersion>3.0.1</em:minVersion><!--対応するFirefoxの最低バージョン-->
-        <em:maxVersion>9.0.*</em:maxVersion><!--対応するFirefoxの最高バージョン-->
+        <em:minVersion>4.0.*</em:minVersion><!--対応するFirefoxの最低バージョン-->
+        <em:maxVersion>9.*</em:maxVersion><!--対応するFirefoxの最高バージョン-->
       </Description>
     </em:targetApplication>
 
