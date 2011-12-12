@@ -23,3 +23,4 @@ $(CONTENT_PACKAGE):
 
 clean:
 	rm $(TARGET)
+	rm $(CHROME_DIR)/$(CONTENT_PACKAGE)
