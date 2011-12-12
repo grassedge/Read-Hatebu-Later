@@ -3,25 +3,25 @@
 <?xml-stylesheet href="chrome://global/skin" type="text/css"?>
 <?xml-stylesheet href="chrome://mozapps/content/preferences/preferences.css"?>
 <?xml-stylesheet href="chrome://browser/skin/preferences/preferences.css"?>
-
+<!DOCTYPE dialog SYSTEM "chrome://rhl/locale/config.dtd">
 
 
 
 <prefwindow id="rhl-config"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     xmlns:html="http://www.w3.org/1999/xhtml"
-    title="あとで読ブの設定"
+    title="&rhl.config.title;"
     >
 
   <prefpane
-     id="prefpane-locationbar" label="全般" flex="1">
+     id="prefpane-locationbar" label="&rhl.config.general;" flex="1">
     <preferences>
       <preference id="extensions.readhatebulater.tag"
                   name="extensions.readhatebulater.tag" type="string"/>
     </preferences>
 
     <hbox align="center">
-      <label value="設定するタグ:" />
+      <label value="&rhl.config.tagconfig;" />
       <textbox preference="extensions.readhatebulater.tag" id="rhlTag" />
     </hbox>
   </prefpane>

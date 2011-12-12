@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <?xml-stylesheet type="text/css" href="chrome://global/skin/global.css"?>
 <?xml-stylesheet type="text/css" href="chrome://rhl/skin/locationbar.css"?>
-
+<!DOCTYPE overlay SYSTEM "chrome://rhl/locale/rhl.dtd">
 
 
 
@@ -29,7 +29,7 @@
   <popup id="contentAreaContextMenu">
     <menuitem
        insertafter="context-bookmarklink"
-       label="このリンクを[あとで読ブ]"
+       label="&rhl.contextmenu.addlink;"
        id="rhl-menu-addlink"
        />
   </popup>

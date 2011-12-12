@@ -2,3 +2,5 @@ content  rhl chrome/content/
 overlay  chrome://browser/content/browser.xul chrome://rhl/content/overlay.xul
 resource rhl resources/
 skin     rhl classic/1.0 chrome/skin/classic/
+locale   rhl ja-JP       chrome/locale/ja-JP/
+locale   rhl en-US       chrome/locale/en-US/
