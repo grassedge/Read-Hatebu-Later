@@ -241,6 +241,9 @@ var net = {
         req.mozBackgroundRequest = true;
         req.open('POST', 'http://b.hatena.ne.jp/' + User.user.name + net.api[command]);
         req.addEventListener('error', function(e){dump('error...');}, false);
+        Application.console.log('hhhhhhhhhhh');
+        //Application.console.log(User.user.rk);
+        dump(User.user.rk);
         let headers = {
             "Content-Type": "application/x-www-form-urlencoded",
             "Cookie":       "rk=" + User.user.rk
