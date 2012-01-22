@@ -1,13 +1,17 @@
 Components.utils.import("resource://rhl/modules/00-utils.jsm");
+Components.utils.import("resource://rhl/modules/53-RHLPrefs.js");
 
 const EXPORTED_SYMBOLS = ["ReadLater"];
 
 var ReadLater = {
     prefs: null,
-    rhlTag: "",
+    //rhlTag: Prefs.rhl.get('tag'),
     tagList: null,
     rhlList: null,
     user: null,
+    get rhlTag() {
+        return Prefs.rhl.get('tag');
+    },
 
     /*
     init: function() {
@@ -31,17 +35,6 @@ var ReadLater = {
 	this.prefs.removeObserver("", this);
     },
 
-    setupConfig: function Setup_config() {
-        // 設定を初期化
-        var nsISupportsString = Components.interfaces.nsISupportsString;
-        this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
-            .getService(Components.interfaces.nsIPrefService)
-            .getBranch("extensions.readhatebulater.");
-        this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
-        this.prefs.addObserver("", this, false);
-	
-        this.rhlTag = this.prefs.getComplexValue('tag', nsISupportsString).data;
-    },
 
     setupContextMenu: function() {
         // コンテキストメニューを初期化
@@ -76,7 +69,7 @@ var ReadLater = {
     },
     
 
-    /*
+    /* TODO. 53-RHLPrefs.js を修正する.
     // callback
     observe: function(subject, topic, data) {
 	if (topic != "nsPref:changed") {
@@ -97,20 +90,7 @@ var ReadLater = {
 
     // callback
     setRhlList: function (aEvt) {
-
-        // TODO.
-        var nsISupportsString = Components.interfaces.nsISupportsString;
-        this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
-            .getService(Components.interfaces.nsIPrefService)
-            .getBranch("extensions.readhatebulater.");
-        this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
-        // this.prefs.addObserver("", this, false);
-	
-        ReadLater.rhlTag = this.prefs.getComplexValue('tag', nsISupportsString).data;
-        //dump(ReadLater.rhlTag);
-        // TODO.
-
-        //dump('set_rhl_list\n');
+        
         var tagList = {};
         var rhlList = {};
         var bookmarks = [];
@@ -152,44 +132,12 @@ var ReadLater = {
             }
             ReadLater.rhlList = rhlList;
             ReadLater.tagList = tagList;
-            ReadLater.bookmarks = bookmarks;
-            // dump('tag:');
-            // dump(ReadLater.rhlTag);
-            // dump(':tag');
-            // dump('setup complete\n');
+            //ReadLater.bookmarks = bookmarks;
         } else {
             dump("Error loading page\n");
         }
     },
     
-    // callback
-    toggle: function toggle (){
-        let icon = document.getElementById("rhl-locationbar-icon");
-        // 現在開いているタブ
-        let tab = gBrowser.selectedBrowser.contentDocument;
-        let url = tab.location;
-        let registed = icon.getAttribute('registed');
-        if (registed == 'true') {
-            icon.setAttribute('registed', 'false');
-            ReadLater.deleteBookmark(url);
-        } else {
-            icon.setAttribute('registed', 'true');
-            ReadLater.addBookmarkByIcon(url);
-        }
-    },
-
-    // callback
-    setIcon: function set_icon () {
-        let icon = document.getElementById("rhl-locationbar-icon");
-        // 現在開いているタブ
-        let tab = gBrowser.selectedBrowser.contentDocument;
-        let url = tab.location;
-        if (ReadLater.rhlList[url]) {
-            icon.setAttribute('registed', 'true');
-        } else {
-            icon.setAttribute('registed', 'false');
-        }
-    },
 
     // callback
     addBookmarkByIcon: function add_bookmark(url) {
@@ -209,11 +157,6 @@ var ReadLater = {
         };
     },
     
-    // callback
-    addBookmarkByContextMenu: function add_bookmark_by_ctx (url) {
-        
-    },
-
     // callback
     deleteBookmark: function delete_bookmark(url) {
         var comment = ReadLater.rhlList[url].comment;
