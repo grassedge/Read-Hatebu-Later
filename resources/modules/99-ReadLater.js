@@ -1,8 +1,6 @@
-dump('rhl.js\n');
+Components.utils.import("resource://rhl/modules/00-utils.jsm");
 
-const EXPORT = ['ReadLater'];
-
-RHL.User.login();
+const EXPORTED_SYMBOLS = ["ReadLater"];
 
 var ReadLater = {
     prefs: null,
@@ -11,11 +9,12 @@ var ReadLater = {
     rhlList: null,
     user: null,
 
+    /*
     init: function() {
 
-        //dump(RHL.User.user.name);
-        //dump(RHL.ReadLater);
-        //User.login();
+        User.login();
+        // ログインユーザー名を取得
+        // this.user = RHL.User.user; // まだ取得できていないので無意味
 
         this.setupConfig();
         this.setupContextMenu();
@@ -28,7 +27,6 @@ var ReadLater = {
         document.addEventListener('TabSelect', this.setIcon, false);
         window.setInterval(this.setupRhlList, 10*60*1000);
     },
-
     shutdown: function() {
 	this.prefs.removeObserver("", this);
     },
@@ -59,24 +57,26 @@ var ReadLater = {
         var contextAddlink = document.getElementById("rhl-menu-addlink");
         contextAddlink.addEventListener('click', function(){
             var url = gContextMenu.linkURL;
-            if (!RHL.ReadLater.rhlList[url]) {
-                RHL.ReadLater.addBookmarkByIcon(url);
-                RHL.ReadLater.rhlList[url] = {
+            if (!ReadLater.rhlList[url]) {
+                ReadLater.addBookmarkByIcon(url);
+                ReadLater.rhlList[url] = {
                     url: url,
-                    tag: RHL.ReadLater.rhlTag
+                    tag: ReadLater.rhlTag
                 };
             }
         });
     },
+    */
 
     setupRhlList: function setup_rhl_list() {
         var req = new XMLHttpRequest();
-        req.open('GET', 'http://b.hatena.ne.jp/' + RHL.User.user.name + '/search.data', true);
+        req.open('GET', 'http://b.hatena.ne.jp/' + shared.get('User').user.name + '/search.data', true);
         req.onreadystatechange = ReadLater.setRhlList;
         req.send(null);
     },
     
 
+    /*
     // callback
     observe: function(subject, topic, data) {
 	if (topic != "nsPref:changed") {
@@ -93,9 +93,24 @@ var ReadLater = {
             break;
         }
     },
+    */
 
     // callback
     setRhlList: function (aEvt) {
+
+        // TODO.
+        var nsISupportsString = Components.interfaces.nsISupportsString;
+        this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
+            .getService(Components.interfaces.nsIPrefService)
+            .getBranch("extensions.readhatebulater.");
+        this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
+        // this.prefs.addObserver("", this, false);
+	
+        ReadLater.rhlTag = this.prefs.getComplexValue('tag', nsISupportsString).data;
+        //dump(ReadLater.rhlTag);
+        // TODO.
+
+        //dump('set_rhl_list\n');
         var tagList = {};
         var rhlList = {};
         var bookmarks = [];
@@ -131,15 +146,20 @@ var ReadLater = {
                 let bookmark = bookmarks[i];
                 tagList[bookmark.url] = bookmark;
                 if (bookmark.tag.indexOf(ReadLater.rhlTag) != -1) {
+                    // dump('later');
                     rhlList[bookmark.url] = bookmark;
                 }
             }
+            ReadLater.rhlList = rhlList;
+            ReadLater.tagList = tagList;
+            ReadLater.bookmarks = bookmarks;
+            // dump('tag:');
+            // dump(ReadLater.rhlTag);
+            // dump(':tag');
+            // dump('setup complete\n');
         } else {
             dump("Error loading page\n");
         }
-        ReadLater.rhlList = rhlList;
-        ReadLater.tagList = tagList;
-        ReadLater.bookmarks = bookmarks;
     },
     
     // callback
@@ -151,10 +171,10 @@ var ReadLater = {
         let registed = icon.getAttribute('registed');
         if (registed == 'true') {
             icon.setAttribute('registed', 'false');
-            RHL.ReadLater.deleteBookmark(url);
+            ReadLater.deleteBookmark(url);
         } else {
             icon.setAttribute('registed', 'true');
-            RHL.ReadLater.addBookmarkByIcon(url);
+            ReadLater.addBookmarkByIcon(url);
         }
     },
 
@@ -164,7 +184,7 @@ var ReadLater = {
         // 現在開いているタブ
         let tab = gBrowser.selectedBrowser.contentDocument;
         let url = tab.location;
-        if (RHL.ReadLater.rhlList[url]) {
+        if (ReadLater.rhlList[url]) {
             icon.setAttribute('registed', 'true');
         } else {
             icon.setAttribute('registed', 'false');
@@ -172,7 +192,6 @@ var ReadLater = {
     },
 
     // callback
-    /*
     addBookmarkByIcon: function add_bookmark(url) {
         var comment = '[' + ReadLater.rhlTag + ']';
         if (ReadLater.tagList[url]) {
@@ -189,7 +208,6 @@ var ReadLater = {
             comment: comment
         };
     },
-    */
     
     // callback
     addBookmarkByContextMenu: function add_bookmark_by_ctx (url) {
@@ -197,7 +215,6 @@ var ReadLater = {
     },
 
     // callback
-    /*
     deleteBookmark: function delete_bookmark(url) {
         var comment = ReadLater.rhlList[url].comment;
         comment = comment.replace('[' + ReadLater.rhlTag + ']', '').trim();
@@ -214,11 +231,9 @@ var ReadLater = {
         }
         delete ReadLater.rhlList[url];
     }
-    */
     
 };
 
-/*
 var net = {
     api: {
         add   : '/add.edit.json?editer=fxaddon',
@@ -248,16 +263,16 @@ var net = {
     post: function Net_post (command, query) {
         var req = new XMLHttpRequest();
         req.mozBackgroundRequest = true;
-        req.open('POST', 'http://b.hatena.ne.jp/' + RHL.User.user.name + net.api[command]);
+        req.open('POST', 'http://b.hatena.ne.jp/' + shared.get('User').user.name + net.api[command]);
         req.addEventListener('error', function(e){dump('error...');}, false);
-        dump(RHL.User.user.rk);
+        dump(shared.get('User').user.rk);
         let headers = {
             "Content-Type": "application/x-www-form-urlencoded",
-            "Cookie":       "rk=" + RHL.User.user.rk
+            "Cookie":       "rk=" + shared.get('User').user.rk
         };
         for (let [field, value] in Iterator(headers))
             req.setRequestHeader(field, value);
-        query.rks = RHL.User.user.rks;
+        query.rks = shared.get('User').user.rks;
         req.send(net.makeQuery(query));
     },
 
@@ -307,95 +322,3 @@ var net = {
     }
 
 };
-*/
-
-var Ci = Components.interfaces;
-var Cc = Components.classes;
-
-let getService = function getService(name, i) {
-    let interfaces = Array.concat(i);
-    let service = Cc[name].getService(interfaces.shift());
-    interfaces.forEach(function(i) service.QueryInterface(i));
-    return service;
-};
-
-/*
-var User = {
-    rk: (function User_getRk() {
-        let cookies = getService("@mozilla.org/cookiemanager;1",
-                                 Ci.nsICookieManager).enumerator;
-        while (cookies.hasMoreElements()) {
-            let cookie = cookies.getNext().QueryInterface(Ci.nsICookie);
-            if (cookie.host === ".hatena.ne.jp" && cookie.name === "rk") {
-                //Prefs.bookmark.set('everLoggedIn', true);
-                return cookie.value;
-            }
-        }
-        return "";
-    })(),
-
-    login: function User_login () {
-        net._http('http://b.hatena.ne.jp/my.name',
-                  User._login, User.loginErrorHandler,
-                  true, null, { Cookie: 'rk=' + User.rk }, 'POST');
-    },
-
-    _login: function User__login (res) {
-        res = RHL.decodeJSON(res.responseText);
-        if (res.login) {
-            User.setUser(res);
-            ReadLater.setupRhlList();
-            return User.user;
-        } else {
-            User.clearUser();
-            return false;
-        }
-    },
-
-    loginErrorHandler: function User_loginErrorHandler(res) {
-        dump('login errro...');
-    },
-
-    setUser: function User_setCurrentUser (res) {
-        // if (res.bookmark_count) {
-        //     shared.set('alreadyBookmarked', true);
-        //     Prefs.bookmark.set('everBookmarked', true);
-        // }
-        // let current = this.user;
-        // if (current) {
-        //     if (current.name == res.name) {
-        //         extend(current.options, res);
-        //         delete current._ignores;
-        //         return current;
-        //     }
-        //     this.clearUser(true);
-        // }
-        //let user = new User(res.name, res);
-        //this.user = user;
-        this.user = {
-            name: res.name,
-            rks : res.rks
-        };
-        //EventService.dispatch('UserChange', this);
-    }
-
-};
-*/
-
-/*
-dump(RHL.decodeJSON);
-function decodeJSON(json) {
-    try {
-        return (typeof JSON === "object")
-            ? JSON.parse(json)
-            : Cc['@mozilla.org/dom/json;1'].createInstance(Ci.nsIJSON)
-                                           .decode(json);
-    } catch (ex) {
-        return null;
-    }
-}
-*/
-
-window.addEventListener('load',   function(e) { ReadLater.init(); }, false);
-window.addEventListener('unload', function(e) { ReadLater.shutdown(); }, false);
-
